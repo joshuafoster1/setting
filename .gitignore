@@ -1,0 +1,8 @@
+*.pyc
+*~
+__pycache__
+WebDev
+db.sqlite3
+.DS_Store
+.env
+touchstoneTest.py

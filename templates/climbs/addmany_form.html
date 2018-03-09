@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" novalidate>
+  {% csrf_token %}
+  {% include 'includes/formset.html' %}
+
+  <button type="submit" class="btn btn-success">Submit</button>
+  <a class="btn btn-success" href="#">Finished</a>
+
+</form>
+{% endblock %}
