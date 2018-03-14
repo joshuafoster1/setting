@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+<p>Number of climbs: {{ num_climbs }}</p>
+<form method="post" novalidate>
+  {% csrf_token %}
+
+{% render_table table %}
+<a class="btn btn-success" href="{% url 'boulder_set' %}">Confirm Removal</a>
+<a class="btn btn-success" href="{% url 'boulder_list' %}">REselect</a>
+</form>
+{% endblock %}

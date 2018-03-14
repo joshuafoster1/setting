@@ -6,8 +6,12 @@ from django.views.generic import UpdateView
 from climbs.models import Setter
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import GymSelectionForm
+import datetime
 # Create your views here.
+
+
 def get_user(request):
     pk = request.user.pk
     setter = get_object_or_404(Setter, user__pk=pk)
@@ -28,7 +32,17 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 def home(request):
-    return render(request, 'home.html')
+    if request.method == 'POST':
+        form = GymSelectionForm(request.POST)
+        if form.is_valid():
+            gym = form
+            gym_name = gym.cleaned_data['name']
+            request.session[gym_name] = gym_name
+            request.session[gym_name].set_expriry(datetime.time(24,0,0,0))
+            return redirect('home')
+    else:
+        form = GymSelectionForm()
+    return render(request, 'home.html', {'form': form})
 
 class UpdateSetter(UpdateView):
     model = User

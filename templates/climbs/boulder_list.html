@@ -2,11 +2,7 @@
 {% load django_tables2 %}
 
 {% block content %}
-{% for boulder in boulders %}
 
-<p>{{item.grade}}</p>
-
-{% endfor %}
 <form method="post" novalidate>
   {% csrf_token %}
 

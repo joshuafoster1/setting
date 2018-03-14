@@ -80,3 +80,18 @@ class Route(models.Model):
 
     def __str__(self):
         return self.color + ' ' + self.area
+
+class ClimbType(models.Model):
+    route = models.BooleanField()
+    anchor = models.IntegerField(null=True)
+    lead = models.BooleanField()
+    toprope = models.BooleanField()
+
+class CLimb(models.Model):
+    climb_type = models.ForeignKey(ClimbType, related_name = 'climbs')
+    date_set = models.DateField()
+    date_retired = models.DateField()
+    color = models.ForeignKey(Color, related_name='climbs')
+    grade = models.ForeignKey(Grade, related_name='climbs')
+    area = models.ForeignKey(Area, related_name='climbs')
+    setter = models.ForeignKey(Setter, related_name='climbs')

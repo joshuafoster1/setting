@@ -8,6 +8,10 @@ class BoulderTable(tables.Table):
         model = Boulder
         template_name = 'django_tables2/bootstrap-responsive.html'
         # order_by_field = True
+class BoulderRemoveTable(tables.Table):
+    class Meta:
+        model = Boulder
+        template_name = 'django_tables2/bootstrap-responsive.html'
 
 class RouteTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor='pk', orderable = True)

@@ -9,18 +9,24 @@ from django_tables2 import RequestConfig
 # Create your views here.
 def boulder_list(request, template_name='climbs/climbs_list.html'):
     if request.method =="POST":
-        boulder_ids = Boulder.objects.filter(pk__in=list(request.POST.getlist('selection')))
-        print(boulder_ids)
+        climb_ids = list(request.POST.getlist('selection'))
+        request.session['remove_boulder'] = climb_ids
+        num_climbs = len(climb_ids)
+        boulders = Boulder.objects.filter(pk__in=climb_ids)
+        table = BoulderRemoveTable(boulders)
+
+        return render(request, 'climbs/replace_climbs.html', {'table': table, 'num_climbs': num_climbs })
 
     boulders = Boulder.objects.filter(area__gym__name = 'Pipeworks')
     table = BoulderTable(boulders)
     RequestConfig(request).configure(table)
     return render(request, template_name, {'table': table})
 
+
 def route_list(request, template_name='climbs/climbs_list.html'):
     if request.method =="POST":
         route_ids = Route.objects.filter(pk__in=list(request.POST.getlist('selection')))
-        print(route_ids)
+        return render(request, 'climbs/replace_climbs.html', {'climbs': route_ids})
 
     routes = Route.objects.filter(area__gym__name = 'Pipeworks')
     table = RouteTable(routes)
@@ -44,3 +50,19 @@ def formset(request, template_name='climbs/addmany_form.html'):
     else:
         form=AddmanyFormset()
     return render(request, template_name, {'formset': form})
+
+def boulder_set(request):
+    climb_ids = request.session['remove_boulder']
+    reset_num = len(climb_ids)
+    if reset_num <= 1:
+        # climb = Boulder.object.create(grade = )
+        return render(request, 'climbs/boulder_set.html', {'climbs': 'climb'})
+    else:
+        climbs = []
+        for i in range(reset_num):
+            # climb = Boulder.object.create(grade = )
+            # climbs.append(climb)
+            continue
+        return render(request, 'climbs/boulder_set.html', {})
+
+    # boulders = Boulder.objects.filter(pk__in=climb_ids)
