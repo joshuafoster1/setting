@@ -7,18 +7,20 @@ from .tables import *
 from django_tables2 import RequestConfig
 
 # Create your views here.
-def boulder_list(request, template_name='climbs/climbs_list.html'):
+CLIMBTYPE = {'route': Route, 'boulder': Boulder}
+
+def boulder_list(request, climb_type, template_name='climbs/climbs_list.html'):
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
-        request.session['remove_boulder'] = climb_ids
+        request.session['remove_climbs'] = climb_ids
         num_climbs = len(climb_ids)
-        boulders = Boulder.objects.filter(pk__in=climb_ids)
-        table = BoulderRemoveTable(boulders)
+        climbs = CLIMBTYPE[climb_type].objects.filter(pk__in=climb_ids)
+        table = ClimbRemoveTable(climbs)
 
         return render(request, 'climbs/replace_climbs.html', {'table': table, 'num_climbs': num_climbs })
 
-    boulders = Boulder.objects.filter(area__gym__name = 'Pipeworks')
-    table = BoulderTable(boulders)
+    climbs = CLIMBTYPE[climb_type].objects.filter(area__gym__name = 'Pipeworks')
+    table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
     return render(request, template_name, {'table': table})
 
@@ -52,7 +54,7 @@ def formset(request, template_name='climbs/addmany_form.html'):
     return render(request, template_name, {'formset': form})
 
 def boulder_set(request):
-    climb_ids = request.session['remove_boulder']
+    climb_ids = request.session['remove_climbs']
     reset_num = len(climb_ids)
     if reset_num <= 1:
         # climb = Boulder.object.create(grade = )

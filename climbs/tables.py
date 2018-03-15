@@ -1,16 +1,16 @@
 import django_tables2 as tables
 from .models import Boulder, Route
 
-class BoulderTable(tables.Table):
+class ClimbTable(tables.Table):
     # AreaDate =  tables.Column(order_by=('date', 'area'))
     selection = tables.CheckBoxColumn(accessor='pk', orderable = True)
     class Meta:
-        model = Boulder
+        model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
         # order_by_field = True
-class BoulderRemoveTable(tables.Table):
+class ClimbRemoveTable(tables.Table):
     class Meta:
-        model = Boulder
+        model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
 
 class RouteTable(tables.Table):

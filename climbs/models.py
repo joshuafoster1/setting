@@ -87,10 +87,19 @@ class ClimbType(models.Model):
     lead = models.BooleanField()
     toprope = models.BooleanField()
 
-class CLimb(models.Model):
+class Status(models.Model):
+    CHOICES = (
+        ('current', 'current'),
+        ('retired', 'retired'),
+        ('in progress', 'in progress')
+    )
+    status = models.CharField(choices=CHOICES, max_length=11)
+
+class Climb(models.Model):
     climb_type = models.ForeignKey(ClimbType, related_name = 'climbs')
-    date_set = models.DateField()
-    date_retired = models.DateField()
+    status = models.ForeignKey(Status, related_name='climbs')
+    date_created = models.DateField()
+    date_retired = models.DateField(null=True)
     color = models.ForeignKey(Color, related_name='climbs')
     grade = models.ForeignKey(Grade, related_name='climbs')
     area = models.ForeignKey(Area, related_name='climbs')
