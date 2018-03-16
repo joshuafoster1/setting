@@ -5,11 +5,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .tables import *
 from django_tables2 import RequestConfig
-
+from django.db.models import Count
 # Create your views here.
 CLIMBTYPE = {'route': Route, 'boulder': Boulder}
 
-def boulder_list(request, climb_type, template_name='climbs/climbs_list.html'):
+def climb_query(request, climb_type='boulder'):
+    query = CLIMBTYPE[climb_type].objects.values('date', 'area__location_name').order_by('date').annotate(count = Count('grade'))
+    print(query)
+
+def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
         request.session['remove_climbs'] = climb_ids
@@ -41,7 +45,7 @@ def boulder_create(request, template_name='climbs/boulder_form.html'):
         form = BoulderForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('boulder_list')
+            return redirect('climbs_list', 'boulder')
     else:
         form = BoulderForm()
     return render(request, template_name, {'form': form})

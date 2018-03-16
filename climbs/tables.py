@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import Boulder, Route
+from .models import Boulder, Route, Climb
 
 class ClimbTable(tables.Table):
     # AreaDate =  tables.Column(order_by=('date', 'area'))
@@ -7,6 +7,7 @@ class ClimbTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = ['date', 'area', 'grade', 'color', 'setter']
         # order_by_field = True
 class ClimbRemoveTable(tables.Table):
     class Meta:
