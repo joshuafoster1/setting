@@ -7,7 +7,7 @@
   {% csrf_token %}
 
 {% render_table table %}
-<a class="btn btn-success" href="{% url 'boulder_set' %}">Confirm Removal</a>
-<a class="btn btn-success" href="{% url 'boulder_list' %}">REselect</a>
+<a class="btn btn-success" href="{% url 'climb_set' 1 %}">Confirm Removal</a>
+<a class="btn btn-success" href="{% url 'climbs_list' 1 %}">REselect</a>
 </form>
 {% endblock %}

@@ -7,7 +7,7 @@ class ClimbTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['date', 'area', 'grade', 'color', 'setter']
+        fields = ['date_created', 'area', 'grade', 'color', 'setter']
         # order_by_field = True
 class ClimbRemoveTable(tables.Table):
     class Meta:
@@ -18,4 +18,12 @@ class RouteTable(tables.Table):
     selection = tables.CheckBoxColumn(accessor='pk', orderable = True)
     class Meta:
         model = Boulder
+        template_name = 'django_tables2/bootstrap-responsive.html'
+
+class ClimbQuery(tables.Table):
+    date_created = tables.Column()
+    area__location_name = tables.Column()
+    count = tables.Column()
+
+    class Meta:
         template_name = 'django_tables2/bootstrap-responsive.html'

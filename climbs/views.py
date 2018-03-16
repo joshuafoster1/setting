@@ -7,36 +7,44 @@ from .tables import *
 from django_tables2 import RequestConfig
 from django.db.models import Count
 # Create your views here.
-CLIMBTYPE = {'route': Route, 'boulder': Boulder}
-
+CLIMBTYPE = {'route': 2, 'boulder': 1}
+GYM = 'Pipeworks'
 def climb_query(request, climb_type='boulder'):
-    query = CLIMBTYPE[climb_type].objects.values('date', 'area__location_name').order_by('date').annotate(count = Count('grade'))
-    print(query)
+    query = Climb.objects.values('date_created', 'area__location_name').order_by('date_created').annotate(count = Count('grade'))
+    table = ClimbQuery(query)
+    RequestConfig(request).configure(table)
+    return render(request, 'climbs/climbs_list.html', {'table': table})
+
+
+def distribution(climb_type):
+    test = Spread.objects.values('grade__grade', 'quantity').filter(gym__name=GYM)
+    climbs = Climb.objects.values('grade__grade').annotate(total=Count('grade')).filter(area__gym__name=GYM)
+    grade_spread = []
+    for climb in climbs:
+        climb_grade = climb['grade__grade']
+        for desired in test:
+            spread_grade = desired['grade__grade']
+            if climb_grade == spread_grade:
+
+                diff = int(desired['quantity']) - int(climb['total'])
+                grade_spread.append((climb['grade__grade'], diff))
+    return grade_spread
+
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
         request.session['remove_climbs'] = climb_ids
         num_climbs = len(climb_ids)
-        climbs = CLIMBTYPE[climb_type].objects.filter(pk__in=climb_ids)
+        climbs = Climb.objects.filter(pk__in=climb_ids)
         table = ClimbRemoveTable(climbs)
 
         return render(request, 'climbs/replace_climbs.html', {'table': table, 'num_climbs': num_climbs })
 
-    climbs = CLIMBTYPE[climb_type].objects.filter(area__gym__name = 'Pipeworks')
+    climbs = Climb.objects.filter(area__gym__name = GYM).filter(grade__climb=CLIMBTYPE[climb_type])
     table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
-    return render(request, template_name, {'table': table})
-
-
-def route_list(request, template_name='climbs/climbs_list.html'):
-    if request.method =="POST":
-        route_ids = Route.objects.filter(pk__in=list(request.POST.getlist('selection')))
-        return render(request, 'climbs/replace_climbs.html', {'climbs': route_ids})
-
-    routes = Route.objects.filter(area__gym__name = 'Pipeworks')
-    table = RouteTable(routes)
-    RequestConfig(request).configure(table)
+    print(distribution('boulder'))
     return render(request, template_name, {'table': table})
 
 
@@ -50,6 +58,7 @@ def boulder_create(request, template_name='climbs/boulder_form.html'):
         form = BoulderForm()
     return render(request, template_name, {'form': form})
 
+
 def formset(request, template_name='climbs/addmany_form.html'):
     if request.method == 'POST':
         form = AddmanyFormset()
@@ -57,11 +66,14 @@ def formset(request, template_name='climbs/addmany_form.html'):
         form=AddmanyFormset()
     return render(request, template_name, {'formset': form})
 
-def boulder_set(request):
+
+def climb_set(request):
     climb_ids = request.session['remove_climbs']
     reset_num = len(climb_ids)
-    if reset_num <= 1:
-        # climb = Boulder.object.create(grade = )
+    spread = ['V1']
+
+    if len(spread) <= 1:
+        climb = Climb.objects.create(status = 'in progress', date_created=DATE)
         return render(request, 'climbs/boulder_set.html', {'climbs': 'climb'})
     else:
         climbs = []

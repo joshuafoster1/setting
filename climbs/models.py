@@ -29,12 +29,28 @@ class Setter(models.Model):
         return user_info
 
 
+
+class Grade(models.Model):
+    CLIMBTYPE = (
+        (1, 'Boulder'),
+        (2, 'Route'),
+    )
+
+    grade = models.CharField(max_length=7)
+    climb = models.IntegerField(choices=CLIMBTYPE)
+    def __str__(self):
+        return self.grade
+
 class Gym(models.Model):
     name = models.CharField(max_length=50)
-
     def __str__(self):
         return self.name
 
+
+class Spread(models.Model):
+    grade = models.ForeignKey(Grade, related_name='the_spread')
+    quantity = models.IntegerField()
+    gym = models.ForeignKey(Gym, related_name='the_spread')
 
 class Color(models.Model):
     color = models.CharField(max_length=10)
@@ -42,12 +58,6 @@ class Color(models.Model):
     def __str__(self):
         return self.color
 
-
-class Grade(models.Model):
-    grade = models.CharField(max_length=7)
-
-    def __str__(self):
-        return self.grade
 
 class Area(models.Model):
     gym = models.ForeignKey(Gym, related_name='locations')
