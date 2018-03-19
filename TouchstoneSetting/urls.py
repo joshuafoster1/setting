@@ -33,6 +33,7 @@ urlpatterns = [
 
     url(r'^SetterInfo/$', views.setter_info, name='setter_info'),
     url(r'^SetterInfo/update/(?P<pk>\d+)/$', views.UpdateSetter.as_view(), name='update_setter_info'),
+    url(r'^SetterGym/update/(?P<pk>\d+)/$', views.UpdateGymLocation.as_view(), name='update_gym_location'),
 
 
 ]

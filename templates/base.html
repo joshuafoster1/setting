@@ -19,7 +19,7 @@
    {% block body %}
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">Touchstone Setting</a>
+        <a class="navbar-brand" href="{% url 'home' %}">Touchstone Setting: {{ gym }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -53,7 +53,7 @@
                   </li>
 
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Metrics</a>
+                    <a class="nav-link" href="{% url 'climb_query' %}">Query</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Schedule</a>

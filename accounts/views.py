@@ -30,19 +30,22 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+class UpdateGymLocation(UpdateView):
+    model = Setter
+    fields = ['current_gym']
+    template_name = 'accounts/update_setter.html'
+    success_url = reverse_lazy('home')
 
 def home(request):
+    setter = get_user(request)
     if request.method == 'POST':
         form = GymSelectionForm(request.POST)
         if form.is_valid():
-            gym = form
-            gym_name = gym.cleaned_data['name']
-            request.session[gym_name] = gym_name
-            request.session[gym_name].set_expriry(datetime.time(24,0,0,0))
+            form.save()
             return redirect('home')
     else:
-        form = GymSelectionForm()
-    return render(request, 'home.html', {'form': form})
+        form = GymSelectionForm(instance=setter)
+    return render(request, 'home.html', {'form': form, 'setter':setter, 'gym': setter.current_gym})
 
 class UpdateSetter(UpdateView):
     model = User

@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class='jumbotron text-center'>
+  <h2 class='text-center'>Your current gym is:<b> {{ gym }}</b></h2>
+  <h3 >Be sure to select the correct Gym</h3>
 
-<form method="post" novalidate>
-  {% csrf_token %}
-  <input type='hidden' name='next' value="{{ next }}">
-  {% include 'includes/form.html' %}
-  <button type="submit" class="btn btn-primary btn-block">Log in</button>
-</form>
+<a class="btn btn-primary btn-lg " href="{% url 'update_gym_location' setter.pk %}">Change Gym</a>
 
+</div>
 {% endblock %}

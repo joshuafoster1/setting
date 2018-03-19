@@ -7,15 +7,27 @@ from .tables import *
 from django_tables2 import RequestConfig
 from django.db.models import Count
 # Create your views here.
+def get_user(request):
+    pk = request.user.pk
+    setter = get_object_or_404(Setter, user__pk=pk)
+    return setter
+
+
 CLIMBTYPE = {'route': 2, 'boulder': 1}
 GYM = 'Pipeworks'
+
+###TODO: filter the queryset to the current_gym of the user.
+###TODO: connect to link in base.html
 def climb_query(request, climb_type='boulder'):
-    query = Climb.objects.values('date_created', 'area__location_name').order_by('date_created').annotate(count = Count('grade'))
+    gym = get_user(request).current_gym
+    query = Climb.objects.values('date_created', 'area__location_name').filter(area__gym__name=gym).order_by('date_created').annotate(count = Count('grade'))
     table = ClimbQuery(query)
     RequestConfig(request).configure(table)
-    return render(request, 'climbs/climbs_list.html', {'table': table})
+    return render(request, 'climbs/climbs_list.html', {'table': table, 'gym': gym})
 
-
+###TODO: create a table for the daily spread with a link in every row to update climbs
+### can use list, then delete climbs from list and populate a table with climbs claimed
+### for the day. once climbs are gone, leave a button to add climbs
 def distribution(climb_type):
     test = Spread.objects.values('grade__grade', 'quantity').filter(gym__name=GYM)
     climbs = Climb.objects.values('grade__grade').annotate(total=Count('grade')).filter(area__gym__name=GYM)
@@ -30,8 +42,15 @@ def distribution(climb_type):
                 grade_spread.append((climb['grade__grade'], diff))
     return grade_spread
 
+def climb_verification(request):
+    """
+    take a queryset from the days climbs and populate in a formset.
+    upon verification update all climbs from 'in progress' to 'current'.
+    """
+    pass
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
+    gym = get_user(request).current_gym
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
         request.session['remove_climbs'] = climb_ids
@@ -39,13 +58,13 @@ def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
         climbs = Climb.objects.filter(pk__in=climb_ids)
         table = ClimbRemoveTable(climbs)
 
-        return render(request, 'climbs/replace_climbs.html', {'table': table, 'num_climbs': num_climbs })
+        return render(request, 'climbs/replace_climbs.html', {'table': table, 'num_climbs': num_climbs, 'gym':gym })
 
-    climbs = Climb.objects.filter(area__gym__name = GYM).filter(grade__climb=CLIMBTYPE[climb_type])
+    climbs = Climb.objects.filter(area__gym__name = gym).filter(grade__climb=CLIMBTYPE[climb_type])
     table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
     print(distribution('boulder'))
-    return render(request, template_name, {'table': table})
+    return render(request, template_name, {'table': table, 'gym': gym})
 
 
 def boulder_create(request, template_name='climbs/boulder_form.html'):

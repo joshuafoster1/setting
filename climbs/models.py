@@ -7,12 +7,16 @@ from django.db import models
 
 # Create your models here.
 DATE = date.today()
+class Gym(models.Model):
+    name = models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
 
 
 class Setter(models.Model):
     name = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    current_gym = models.ForeignKey(Gym)
     def __str__(self):
         return self.name
 
@@ -40,11 +44,6 @@ class Grade(models.Model):
     climb = models.IntegerField(choices=CLIMBTYPE)
     def __str__(self):
         return self.grade
-
-class Gym(models.Model):
-    name = models.CharField(max_length=50)
-    def __str__(self):
-        return self.name
 
 
 class Spread(models.Model):

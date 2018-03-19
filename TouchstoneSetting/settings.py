@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'climbs',
     'django_tables2',
     'widget_tweaks',
+    'import_export',
 ]
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
