@@ -3,11 +3,17 @@
 
 {% block content %}
 <p>Number of climbs: {{ num_climbs }}</p>
-<form method="post" novalidate>
-  {% csrf_token %}
 
 {% render_table table %}
-<a class="btn btn-success" href="{% url 'climb_set' 1 %}">Confirm Removal</a>
-<a class="btn btn-success" href="{% url 'climbs_list' 1 %}">REselect</a>
+
+<form name='form' method="post" action="{% url 'climb_set' %}" novalidate>
+  {% csrf_token %}
+
+Quantity to reset:
+<input type="number" name="quantity"
+ min="0" max="100" step="10" value="{{num_climbs}}">
+<input class="btn btn-success" type="submit" value="Confirm Removal and Create Spread" />
+
+<a class="btn btn-success" href="{% url 'climbs_list' climb_type %}">Re-select</a>
 </form>
 {% endblock %}

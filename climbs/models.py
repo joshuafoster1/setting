@@ -103,7 +103,8 @@ class Status(models.Model):
     CHOICES = (
         ('current', 'current'),
         ('retired', 'retired'),
-        ('in progress', 'in progress')
+        ('in progress', 'in progress'),
+        ('in queue', 'in queue'),
     )
     status = models.CharField(choices=CHOICES, max_length=11)
 

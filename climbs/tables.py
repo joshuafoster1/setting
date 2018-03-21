@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import Boulder, Route, Climb
+from .models import Boulder, Route, Climb, Grade
 
 class ClimbTable(tables.Table):
     # AreaDate =  tables.Column(order_by=('date', 'area'))
@@ -24,6 +24,10 @@ class ClimbQuery(tables.Table):
     date_created = tables.Column()
     area__location_name = tables.Column()
     count = tables.Column()
+    min_grade = tables.Column()
+    max_grade = tables.Column()
 
     class Meta:
         template_name = 'django_tables2/bootstrap-responsive.html'
+class GradeSpreadTable(tables.Table):
+    grade = tables.Column()

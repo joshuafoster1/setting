@@ -1,22 +1,36 @@
 {% extends 'base.html' %}
+{% load django_tables2 %}
+
 {% block content %}
+{% render_table table %}
+
+
 <table>
+  <thead>
   <tr>
     <th>
       grade
     </th>
+
     <th>
-      area
+      Select
     </th>
-    <th>
-      Setter
-    </th>
-    {% for boulder in set %}
-    <form>
+  </thead>
+  <tbody>
+  </tr>
+    {% for tuple in grade_spread %}
+    <form method='post'>
         <tr>
-          boulder.grade
+          <td>
+            <input name='grade' value='{{tuple}}'>{{tuple}}
+        </td>
+
+          <td>
+            <input type='submit' value="Submit">
+          </td>
         </tr>
     </form>
 {% endfor %}
+</tbody>
 </table>
 {% endblock %}

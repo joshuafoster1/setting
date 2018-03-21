@@ -48,5 +48,5 @@ class SpreadAdmin(ImportExportModelAdmin):
 # admin.site.register(Area)
 # admin.site.register(Climb)
 # admin.site.register(ClimbRoute)
-# admin.site.register(Status)
+admin.site.register(Status)
 # admin.site.register(Spread)

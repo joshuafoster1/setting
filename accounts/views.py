@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import GymSelectionForm
 import datetime
 # Create your views here.
+DATE = datetime.date.today()
 
 
 def get_user(request):

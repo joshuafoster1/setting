@@ -21,7 +21,7 @@ climbList = []
 #         self.date_created = date_created
 #         self.color = color
 #         self.grade = grade
-# del Data[0]
+del Data[0]
 # del Anchor[0]
 for row in Data:
     date = row[0]
@@ -30,7 +30,6 @@ for row in Data:
     setter = row[3]
     area = row[4]
     anchor = row[5]
-    print(anchor)
     for row in Colors:
         if color == row[1]:
             color = row[0]
@@ -50,14 +49,12 @@ for row in Data:
         if area == row[2]:
             area = row[0]
     for row in Anchor:
-        print(row[1], anchor)
         if anchor == row[1]:
             anchor = row[0]
-        else:
-            anchor = None
+
     oid = oid + 1
 
-    climbList.append((oid, anchor, 3, date, None, color, grade, area, setter))
+    climbList.append((oid, anchor, 1, date, None, color, grade, area, setter))
 
 Climbs = spreadsheet.worksheet('title', 'Climbs')
 # row = len(Climbs.get_col(column_keys['id'])) + 1 #increment to new row
