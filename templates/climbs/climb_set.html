@@ -2,35 +2,13 @@
 {% load django_tables2 %}
 
 {% block content %}
+
+<h1>Grade Spread: pick a climb</h1>
 {% render_table table %}
+<a class="btn btn-success" href="{% url 'climb_create' %}">Add a Climb</a>
+<h1>Climbs in the wall</h1>
+{% render_table in_progress_table %}
+<a class="btn btn-success" href="{% url 'climb_verification' %}">Verify climbs</a>
 
 
-<table>
-  <thead>
-  <tr>
-    <th>
-      grade
-    </th>
-
-    <th>
-      Select
-    </th>
-  </thead>
-  <tbody>
-  </tr>
-    {% for tuple in grade_spread %}
-    <form method='post'>
-        <tr>
-          <td>
-            <input name='grade' value='{{tuple}}'>{{tuple}}
-        </td>
-
-          <td>
-            <input type='submit' value="Submit">
-          </td>
-        </tr>
-    </form>
-{% endfor %}
-</tbody>
-</table>
 {% endblock %}

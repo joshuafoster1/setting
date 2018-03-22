@@ -1,24 +1,38 @@
 import django_tables2 as tables
-from .models import Boulder, Route, Climb, Grade
+from .models import Climb, Grade
+from django_tables2.utils import A
+import datetime
+
+DATE = datetime.date.today()
+
 
 class ClimbTable(tables.Table):
     # AreaDate =  tables.Column(order_by=('date', 'area'))
+    edit = tables.LinkColumn('climb_update', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     selection = tables.CheckBoxColumn(accessor='pk', orderable = True)
+
+
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['date_created', 'area', 'grade', 'color', 'setter']
-        # order_by_field = True
+        fields = ['date_created', 'anchor', 'area', 'grade', 'color', 'setter']
+
+
+class QueueTable(tables.Table):
+    edit = tables.LinkColumn('climb_update', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+
+    class Meta:
+        model = Climb
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = ['date_created', 'grade']
+
+
 class ClimbRemoveTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = ['anchor', 'date_created', 'color', 'grade', 'area', 'setter']
 
-class RouteTable(tables.Table):
-    selection = tables.CheckBoxColumn(accessor='pk', orderable = True)
-    class Meta:
-        model = Boulder
-        template_name = 'django_tables2/bootstrap-responsive.html'
 
 class ClimbQuery(tables.Table):
     date_created = tables.Column()
@@ -29,5 +43,7 @@ class ClimbQuery(tables.Table):
 
     class Meta:
         template_name = 'django_tables2/bootstrap-responsive.html'
+
+
 class GradeSpreadTable(tables.Table):
     grade = tables.Column()

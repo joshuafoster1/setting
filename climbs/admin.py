@@ -29,7 +29,7 @@ class GradeAdmin(ImportExportModelAdmin):
 class SetterAdmin(ImportExportModelAdmin):
     pass
 
-@admin.register(ClimbRoute)
+@admin.register(Anchor)
 class ClimbRouteAdmin(ImportExportModelAdmin):
     pass
 
