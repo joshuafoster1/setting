@@ -152,9 +152,9 @@ def formset(request, template_name='climbs/addmany_form.html'):
 def climb_set(request):
     setter = get_user(request)
     gym = setter.current_gym
-    if request.session['remove_climbs']:
+    try:
         climb_ids = request.session['remove_climbs']
-    else:
+    except:
         climb_ids =[]
 
     if request.method == 'POST' and len(climb_ids) > 0:
