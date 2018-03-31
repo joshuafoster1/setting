@@ -7,11 +7,19 @@ from import_export.admin import ImportExportModelAdmin
 # Register your models here.
 @admin.register(Gym)
 class GymAdmin(ImportExportModelAdmin):
-    pass
+    model = Gym
+    list_display =['name']
+    list_filter = ['name']
+    search_fields = ['name']
 
 @admin.register(Climb)
 class ClimbAdmin(ImportExportModelAdmin):
-    pass
+    model = Climb
+    list_display = ['anchor', 'status', 'date_created', 'date_retired', 'color',
+        'grade', 'area', 'setter']
+    list_filter = ['area__location_name', 'status__status', 'setter__name', 'grade__grade',
+        'anchor__lead', 'anchor__toprope']
+    search_fields = ['setter__name', ]
 
 @admin.register(Setter)
 class SetterAdmin(ImportExportModelAdmin):

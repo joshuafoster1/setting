@@ -107,13 +107,18 @@ def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     RequestConfig(request).configure(table)
     return render(request, template_name, {'table': table, 'gym': gym})
 
+def remove_climb(request, pk):
+    Climb.objects.get(pk=pk).delete()
+    return redirect('climb_set')
 
 
 def climb_create(request, template_name='climbs/climb_form.html'):
     if request.method == 'POST':
         form = ClimbCreateForm(request.POST)
         if form.is_valid():
-            form.save()
+            climb = form.save(commit=False)
+            climb.status = Status.objects.get(status='in progress')
+            climb.save()
             return redirect('climb_set')
     else:
         form = ClimbCreateForm()
@@ -131,9 +136,10 @@ def climb_update(request, pk, template_name='climbs/climb_form.html'):
             climb.color = update.cleaned_data['color']
             climb.area = update.cleaned_data['area']
             climb.grade = update.cleaned_data['grade']
-
+            if update.cleaned_data['anchor']:
+                climb.anchor = update.cleaned_data['anchor']
             climb.status = Status.objects.get(pk=3)
-            climb.setter = setter
+            climb.setter = update.cleaned_data['setter']
 
             climb.save()
             return redirect('climb_set')
@@ -185,7 +191,7 @@ def climb_set(request):
         RequestConfig(request).configure(queue_table)
 
         in_progress = Climb.objects.all().filter(status=3, area__gym__name = gym)
-        in_progress_table = ClimbTable(in_progress)
+        in_progress_table = InProgressTable(in_progress)
         RequestConfig(request).configure(in_progress_table)
 
         return render(request, 'climbs/climb_set.html', {'table': queue_table, 'in_progress_table': in_progress_table, 'gym':gym})

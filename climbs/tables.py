@@ -29,9 +29,20 @@ class WeeksOldColumn(tables.Column):
         weeks = (DATE - record.date_created)/7
         return weeks.days
 
+
+class InProgressTable(tables.Table):
+    remove = tables.LinkColumn('remove_climb', text='Remove', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    update = tables.LinkColumn('climb_update', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    class Meta:
+        model = Climb
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = [ 'anchor', 'area', 'grade', 'color', 'setter']
+        sequence = ('update', 'area', 'grade', 'color', 'setter','anchor' )
+
+
 class ClimbTable(tables.Table):
     # AreaDate =  tables.Column(order_by=('date', 'area'))
-    edit = tables.LinkColumn('climb_update', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    update = tables.LinkColumn('climb_update', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     selection = tables.CheckBoxColumn(accessor='pk', orderable = True)
     weeks_old = WeeksOldColumn(empty_values=(), order_by=('date_created'))
 
@@ -39,7 +50,7 @@ class ClimbTable(tables.Table):
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
         fields = [ 'anchor', 'area', 'grade', 'color', 'setter']
-        sequence = ('selection', 'edit', 'weeks_old', 'area', 'grade', 'color', 'setter','anchor' )
+        sequence = ('selection', 'update', 'weeks_old', 'area', 'grade', 'color', 'setter','anchor' )
         row_attrs = {
             'class': lambda record: row_format(record)
         }

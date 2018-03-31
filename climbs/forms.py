@@ -28,7 +28,7 @@ class AddManyForm(forms.ModelForm):
 class ClimbForm(forms.ModelForm):
     class Meta:
         model = Climb
-        fields = ['anchor', 'color', 'grade', 'area']
+        fields = ['anchor', 'color', 'grade', 'area', 'setter']
 
 
 AddmanyFormset = forms.modelformset_factory(Climb, form=ClimbCreateForm)
