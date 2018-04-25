@@ -12,7 +12,7 @@ class ClimbCreateForm(forms.ModelForm):
         model = Climb
         fields = ['color', 'grade', 'area', 'setter', 'date_created']
         widgets = {
-            'date':DateInput(),
+            'date_created':DateInput(),
         }
 
 
@@ -25,10 +25,23 @@ class AddManyForm(forms.ModelForm):
         model = Climb
         exclude = ()
 
-class ClimbForm(forms.ModelForm):
+class ClimbSelectForm(forms.ModelForm):
     class Meta:
         model = Climb
-        fields = ['anchor', 'color', 'grade', 'area', 'setter']
+        fields = ['anchor','color',]
+
+class ForemanClimbSelectForm(forms.ModelForm):
+    class Meta:
+        model = Climb
+        fields = ['anchor', 'color', 'setter']
+
+class ForemanClimbUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Climb
+        fields = ['anchor', 'color', 'grade', 'area', 'setter', 'date_created']
+        widgets = {
+            'date_created':DateInput(),
+        }
 
 
 AddmanyFormset = forms.modelformset_factory(Climb, form=ClimbCreateForm)

@@ -2,29 +2,22 @@
 {% load django_tables2 %}
 
 {% block content %}
-<script>
-var mouseDown = 0;
-document.body.onmousedown = function() {
-  ++mouseDown;
-}
-document.body.onmouseup = function() {
-  --mouseDown;
-}
 
-$('input[type="checkbox"]').mouseenter(function() {
-    if(mouseDown){
-    if ($(this).is(':checked')) {
-        $(this).prop('checked',false);
-    } else {
-         $(this).prop('checked',true);
-    }
-}
+<script>
+jQuery(function($) {
+    $('.table').checkboxes('range', true);
 });
 </script>
-<form method="post" novalidate>
-  {% csrf_token %}
+<h1>Select climbs</h1>
+<p>Use the checkbox to select the climbs for removal. For ease of selection select the first climb
+  and then hold the Shift key down while selecting the last climb in the page.
+</p>
 
-{% render_table table %}
-<button type="submit" class="btn btn-success">Submit</button>
+<form method="post" novalidate>
+
+  {% csrf_token %}
+<button type="submit" class="btn btn-success">Select for Removal</button>
+  {% render_table table %}
+
 </form>
 {% endblock %}

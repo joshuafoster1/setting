@@ -11,6 +11,7 @@
     <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
     <script src="{% static 'js/easytimer.min.js' %}"></script>
     <script src="{% static 'js/timer.js' %}"></script>
+    <script src="{% static 'js/jquery.checkboxes-1.2.2.min.js' %}"></script>
 
     {% block stylesheet %}{% endblock %}
   </head>
@@ -30,31 +31,18 @@
                 {% ifequal user.groups.all.0.name 'Foreman' %}
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id='CoachMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Foreman
+                    Climbs
                   </a>
                  <div class='dropdown-menu dropdown-menu-right' aria-labelledby="userMenu">
                    <a class="dropdown-item" href="{% url 'climbs_list' 'route' %}">Routes</a>
                    <a class="dropdown-item" href="{% url 'climbs_list' 'boulder' %}">Boulders</a>
+                   <a class="dropdown-item" href="{% url 'climb_query' %}">Gym Summary</a>
+
                  </div>
                 </li>
 
-
                   {% endifequal %}
 
-
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id='TrainingMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Climbs
-                    </a>
-                    <div class='dropdown-menu dropdown-menu-right' aria-labelledby="userMenu">
-                      <a class="dropdown-item" href="{% url 'climbs_list' 'boulder' %}">Boulders</a>
-                      <a class="dropdown-item" href="{% url 'climbs_list' 'route' %}">Routes</a>
-                    </div>
-                  </li>
-
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'climb_query' %}">Query</a>
-                  </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'climb_set' %}">Todays Set</a>
                   </li>

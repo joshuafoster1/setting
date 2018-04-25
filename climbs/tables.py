@@ -55,23 +55,40 @@ class ClimbTable(tables.Table):
             'class': lambda record: row_format(record)
         }
 
-class QueueTable(tables.Table):
-    edit = tables.LinkColumn('climb_update', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+class ClimbQueryTable(ClimbTable):
+    # update = tables.LinkColumn('climb_select', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    selection = tables.CheckBoxColumn(accessor='pk', checked=True, orderable = True)
+    weeks_old = WeeksOldColumn(empty_values=(), order_by=('date_created'))
 
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['date_created', 'grade']
+        fields = [ 'anchor', 'area', 'grade', 'color', 'setter']
+        sequence = ('selection', 'update', 'weeks_old', 'area', 'grade', 'color', 'setter','anchor' )
+        row_attrs = {
+            'class': lambda record: row_format(record)
+        }
+
+class QueueTable(tables.Table):
+    edit = tables.LinkColumn('climb_select', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+
+    class Meta:
+        model = Climb
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = ['date_created', 'grade', 'area']
 
 
 class ClimbRemoveTable(tables.Table):
+    # selection = tables.CheckBoxColumn(accessor='id', checked=True, orderable = True)
+
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['anchor', 'date_created', 'color', 'grade', 'area', 'setter']
+        fields = ['date_created', 'color', 'grade', 'area', 'setter', 'anchor']
 
 
 class ClimbQuery(tables.Table):
+    selection = tables.CheckBoxColumn(accessor='date_created', orderable = True)
 
     date_created = tables.Column()
     area__location_name = tables.Column()

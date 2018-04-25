@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+
+<form method="post" novalidate>
+
+  {% csrf_token %}
+<button type="submit" class="btn btn-success">Confirm Verification of New Climbs</button>
+{% if table %}
+  {% render_table table %}
+{% endif %}
+</form>
+
+{% endblock %}

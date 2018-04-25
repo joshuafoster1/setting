@@ -2,18 +2,23 @@
 {% load django_tables2 %}
 
 {% block content %}
-<p>Number of climbs: {{ num_climbs }}</p>
 
-{% render_table table %}
+
 
 <form name='form' method="post" action="{% url 'climb_set' %}" novalidate>
   {% csrf_token %}
+{% for area in areas %}
+Quantity to reset in {{area.area__location_name}}:
 
-Quantity to reset:
-<input type="number" name="quantity"
- min="0" max="100" step="1" value="{{num_climbs}}">
-<input class="btn btn-success" type="submit" value="Confirm Removal and Create Spread" />
+<input type="number" name="{{area.area__location_name}}"
+ min="0" max="100" step="1" value="{{area.count}}">
+<br>
+ {% endfor %}
 
-<a class="btn btn-success" href="{% url 'climbs_list' climb_type %}">Cancel</a>
+<input class="btn btn-success" type="submit" value="Confirm Removal and Create Spread">
+
+<a class="btn btn-success" href="{% url 'climbs_list' climb_type %}">Re-Select Climbs</a>
 </form>
+
+{% render_table table %}
 {% endblock %}

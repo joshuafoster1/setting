@@ -17,8 +17,7 @@ class ClimbAdmin(ImportExportModelAdmin):
     model = Climb
     list_display = ['anchor', 'status', 'date_created', 'date_retired', 'color',
         'grade', 'area', 'setter']
-    list_filter = ['area__location_name', 'status__status', 'setter__name', 'grade__grade',
-        'anchor__lead', 'anchor__toprope']
+    list_filter = ['area__gym__name', 'status__status', 'date_created', 'setter__name', 'grade__grade']
     search_fields = ['setter__name', ]
 
 @admin.register(Setter)
@@ -41,8 +40,12 @@ class SetterAdmin(ImportExportModelAdmin):
 class ClimbRouteAdmin(ImportExportModelAdmin):
     pass
 
-@admin.register(Spread)
-class SpreadAdmin(ImportExportModelAdmin):
+@admin.register(Distribution)
+class DistributionAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(LocalDistribution)
+class LocalDistributionAdmin(ImportExportModelAdmin):
     pass
 
 
