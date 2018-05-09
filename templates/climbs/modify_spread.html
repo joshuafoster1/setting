@@ -6,11 +6,16 @@
 <form method="post" novalidate>
 
   {% csrf_token %}
-<button type="submit" class="btn btn-success">Confirm Verification of New Climbs</button>
+  <button type="submit" class="btn btn-success">Confirm Queue</button>
+
+<a class="btn btn-success" href="{% url 'climb_set' %}">Return to Today's Set</a>
 
 {% if table %}
   {% render_table table %}
 {% endif %}
+
+{% include 'includes/formset.html' %}
+
 </form>
 
 {% endblock %}

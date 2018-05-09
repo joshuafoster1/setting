@@ -31,7 +31,7 @@ class WeeksOldColumn(tables.Column):
 
 
 class InProgressTable(tables.Table):
-    remove = tables.LinkColumn('remove_climb', text='Remove', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    revert = tables.LinkColumn('revert_climb', text='Revert', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     update = tables.LinkColumn('climb_update', text='Edit', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     class Meta:
         model = Climb
@@ -70,13 +70,18 @@ class ClimbQueryTable(ClimbTable):
         }
 
 class QueueTable(tables.Table):
-    edit = tables.LinkColumn('climb_select', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
-
+    choose = tables.LinkColumn('climb_select', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['date_created', 'grade', 'area']
+        fields = ['grade', 'area']
 
+class ForemanQueueTable(tables.Table):
+    modify = tables.LinkColumn('queue_modify', text='Change', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
+    class Meta:
+        model = Climb
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        fields = ['grade', 'area']
 
 class ClimbRemoveTable(tables.Table):
     # selection = tables.CheckBoxColumn(accessor='id', checked=True, orderable = True)

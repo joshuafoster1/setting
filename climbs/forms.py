@@ -1,7 +1,7 @@
 from django import forms
 from .models import *
 import datetime
-
+from django.forms import modelformset_factory
 DATE = datetime.date.today()
 
 class DateInput(forms.DateInput):
@@ -43,5 +43,11 @@ class ForemanClimbUpdateForm(forms.ModelForm):
             'date_created':DateInput(),
         }
 
-
+class ClimbQueueModifyForm(forms.ModelForm):
+    class Meta:
+        model=Climb
+        fields = ['grade', 'area']
 AddmanyFormset = forms.modelformset_factory(Climb, form=ClimbCreateForm)
+
+
+QueueFormset = modelformset_factory(Climb, form = ClimbQueueModifyForm, extra=0)

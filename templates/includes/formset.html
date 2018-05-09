@@ -1,4 +1,13 @@
 {% load widget_tweaks %}
+{{formset.management_form}}
+<div class="table-container table-responsive">
+<table class="table">
+  <thead>
+    <tr>
+      <th>Grade</th>
+      <th>Area</th>
+      <th></th>
+{% for form in formset%}
 
 {% if form.non_field_errors %}
   <div class="alert alert-danger" role="alert">
@@ -7,17 +16,13 @@
     {% endfor %}
   </div>
 {% endif %}
-
-{% for form in formset %}
-<div class="form-group">
-  <table class='table'>
-    <thead>The header</thead>
 <tr>
 {% for field in form %}
 <td>
-    {{ field.label_tag }}
-</td>
-<td>
+<div class="form-group">
+
+    <!-- {{ field.label_tag }} -->
+
     {% if form.is_bound %}
       {% if field.errors %}
         {% render_field field class="form-control is-invalid" %}
@@ -32,16 +37,16 @@
     {% else %}
       {% render_field field class="form-control" %}
     {% endif %}
-</td>
-<td>
+
     {% if field.help_text %}
       <small class="form-text text-muted">
         {{ field.help_text|safe }}
       </small>
     {% endif %}
-</td>
-    {% endfor %}
-      </tr>
-</table>
   </div>
+</td>
 {% endfor %}
+</tr>
+{% endfor%}
+</table>
+</div>

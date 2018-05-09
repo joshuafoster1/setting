@@ -59,7 +59,7 @@ def climb_query(request, climb_type='boulder'):
         grade_pk = []
         for item1 in list(query):
             if item['date_created'] == item1['date_created'] and item['area__location_name'] not in item1['area__location_name']:
-                item['area__location_name'] += ' '+ item1['area__location_name']
+                item['area__location_name'] += ', '+ item1['area__location_name']
                 pk= [item['min_grade'],item['max_grade'], item1['min_grade'],item1['max_grade']]
                 item['count'] += item1['count']
                 grade_pk += pk
@@ -74,7 +74,7 @@ def climb_query(request, climb_type='boulder'):
             validater.append(route_set['date_created'])
         if item['date_created'] not in validater:
             table_data.append(item)
-    table = ClimbQuery(table_data)
+    table = ClimbQuery(table_data) #table_data
     RequestConfig(request).configure(table)
     return render(request, 'climbs/climbs_list.html', {'table': table, 'gym': gym})
 
@@ -101,7 +101,7 @@ def climb_verification(request):
 
 
     in_progress = Climb.objects.all().filter(status=3, area__gym__name = gym)
-    in_progress_table = ClimbTable(in_progress)
+    in_progress_table = InProgressTable(in_progress)
     RequestConfig(request).configure(in_progress_table)
 
     return render(request, 'climbs/verification.html', {'table': in_progress_table})
@@ -118,14 +118,17 @@ def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
         area = Area.objects.get(location_name='Alcove')
         return render(request, 'climbs/replace_climbs.html', {'table': table, 'areas': areas, 'gym':gym, 'climb_type':climb_type })
 
-    climbs = Climb.objects.filter(area__gym__name = gym).filter(grade__climb=CLIMBTYPE[climb_type], status__status='current')
+    climbs = Climb.objects.filter(area__gym__name = gym).filter(grade__climb=CLIMBTYPE[climb_type], status__status='current').order_by('date_created')
     table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
     return render(request, template_name, {'table': table, 'gym': gym})
 
 
-def remove_climb(request, pk):
-    Climb.objects.get(pk=pk).delete()
+def revert_climb(request, pk):
+    climb = Climb.objects.filter(pk=pk).update(status=4)
+    # climb.status = 4
+    # climb.save()
+    #
     return redirect('climb_set')
 
 
@@ -141,6 +144,27 @@ def climb_create(request, template_name='climbs/climb_form.html'):
         form = ClimbCreateForm()
     return render(request, template_name, {'form': form})
 
+def queue_modify(request, pk):
+    climb = Climb.objects.get(pk=pk)
+
+    if request.method == "POST":
+        form = ClimbQueueModifyForm(request.POST)
+        if form.is_valid():
+            update = form
+            # climb.color = update.cleaned_data['color']
+            # if update.cleaned_data['anchor']:
+            #     climb.anchor = update.cleaned_data['anchor']
+            # # climb.status = Status.objects.get(pk=3)
+            # climb.setter = update.cleaned_data['setter']
+            # climb.date_created = update.cleaned_data['date_created']
+            climb.grade = update.cleaned_data['grade']
+            climb.area = update.cleaned_data['area']
+            climb.save()
+            return redirect('verify_spread')
+
+    else:
+        form = ClimbQueueModifyForm(instance = climb)
+    return render(request, 'climbs/climb_form.html', {'form': form})
 
 def climb_update(request, pk):
     climb = Climb.objects.get(pk=pk)
@@ -184,7 +208,7 @@ def climb_select(request, pk, template_name='climbs/climb_form.html'):
 
 
     elif request.method == "POST":
-        form = CimbSelectForm(request.POST)
+        form = ClimbSelectForm(request.POST)
         if form.is_valid():
             update = form
             climb.color = update.cleaned_data['color']
@@ -204,12 +228,24 @@ def climb_select(request, pk, template_name='climbs/climb_form.html'):
             form = ClimbSelectForm(instance= climb)
     return render(request, template_name, {'form': form})
 
-# def formset(request, template_name='climbs/addmany_form.html'):
-#     if request.method == 'POST':
-#         form = AddmanyFormset()
-#     else:
-#         form=AddmanyFormset()
-#     return render(request, template_name, {'formset': form})
+
+def verify_spread(request):
+    setter = get_user(request)
+    gym = setter.current_gym
+    if request.method == 'POST':
+        formset = QueueFormset(request.POST)
+        if formset.is_valid():
+            queue = formset.save()
+
+            return redirect('climb_set')
+
+    else:
+        formset = QueueFormset(queryset =Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade'))
+        # queue = Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade')
+        # queue_table = ForemanQueueTable(queue)
+        # RequestConfig(request).configure(queue_table)
+
+    return render(request, 'climbs/modify_spread.html', { 'formset':formset})# 'table': queue_table,
 
 
 def climb_set(request):
@@ -224,31 +260,28 @@ def climb_set(request):
     if request.method == 'POST' and len(climb_ids) > 0:
         # Retire Climbs
         Climb.objects.all().filter(pk__in=climb_ids).update(status=2, date_retired=DATE)
+
         # Retrieve areas for new climbs
         areas = Climb.objects.values('area__location_name').filter(pk__in=climb_ids).annotate(count=Count('grade'))
         climb_type = Climb.objects.get(id=climb_ids[0]).grade.climb
         request.session['remove_climbs'] = ''
 
-        for area in areas:
-            print(area)
-            set_num = int(request.POST.get(area['area__location_name']))
-            area_obj = Area.objects.get(location_name=area['area__location_name'], gym=gym)
-            grades = area_obj.get_climbs_to_set(set_num, climb_type)
+        # create queue
+        gym.create_climbs_to_set(request, areas, climb_type)
 
-            Climb.objects.bulk_create([Climb(date_created=DATE, color=Color.objects.get(pk=1), grade=Grade.objects.get(grade=grade), status=Status.objects.get(id=4), setter=Setter.objects.get(id=5), area=area_obj)for grade in grades])
-
-        queue = Climb.objects.all().filter(status=4, area__gym__name = gym)
+        # display queue
+        queue = Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade')
         queue_table = QueueTable(queue)
         RequestConfig(request).configure(queue_table)
 
-
+        #display climbs inprogress
         in_progress = Climb.objects.all().filter(status=3, area__gym__name = gym)
         in_progress_table = ClimbTable(in_progress)
         RequestConfig(request).configure(in_progress_table)
 
-        return render(request, 'climbs/climb_set.html', {'table': queue_table, 'in_progress_table': in_progress_table, 'gym':gym})
+        return render(request, 'climbs/climb_set.html', {'table_len':queue.count, 'table': queue_table, 'in_progress_table': in_progress_table, 'gym':gym})
     else:
-        queue = Climb.objects.all().filter(status=4, area__gym__name = gym)
+        queue = Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade')
         queue_table = QueueTable(queue)
         RequestConfig(request).configure(queue_table)
 
@@ -256,4 +289,4 @@ def climb_set(request):
         in_progress_table = InProgressTable(in_progress)
         RequestConfig(request).configure(in_progress_table)
 
-        return render(request, 'climbs/climb_set.html', {'table': queue_table, 'in_progress_table': in_progress_table, 'gym':gym})
+        return render(request, 'climbs/climb_set.html', {'table_len':queue.count, 'table': queue_table, 'in_progress_table': in_progress_table, 'gym':gym})

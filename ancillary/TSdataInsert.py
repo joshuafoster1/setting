@@ -54,8 +54,8 @@ for row in Data:
 
     oid = oid + 1
 
-    climbList.append((oid, anchor, 1, date, None, color, grade, area, setter))
-
+    climbList.append([oid, anchor, 1, date, None, color, grade, area, setter])
+print(climbList)
 Climbs = spreadsheet.worksheet('title', 'Climbs')
 # row = len(Climbs.get_col(column_keys['id'])) + 1 #increment to new row
 Climbs.update_cells(crange='A2', values = climbList)

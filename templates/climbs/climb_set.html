@@ -5,10 +5,19 @@
 
 <h1>Grade Spread: pick a climb</h1>
 {% render_table table %}
+{% ifequal user.groups.all.0.name 'Foreman' %}
 <a class="btn btn-success" href="{% url 'climb_create' %}">Add a Climb</a>
+<a class="btn btn-success" href="{% url 'verify_spread' %}">Modify Spread</a>
+{% endifequal %}
+
+{% if table_len < 1%}
+<a class="btn btn-success" href="{% url 'climb_create' %}">Add a Climb</a>
+{% endif %}
 <h1>Climbs in progress or on the wall</h1>
 {% render_table in_progress_table %}
+{% ifequal user.groups.all.0.name 'Foreman' %}
+
 <a class="btn btn-success" href="{% url 'climb_verification' %}">Verify climbs</a>
 
-
+{% endifequal %}
 {% endblock %}
