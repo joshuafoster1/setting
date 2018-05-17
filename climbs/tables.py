@@ -70,6 +70,7 @@ class ClimbQueryTable(ClimbTable):
         }
 
 class QueueTable(tables.Table):
+    '''Represent recommendation for climbs to be set'''
     choose = tables.LinkColumn('climb_select', text='Choose', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     class Meta:
         model = Climb
@@ -105,6 +106,11 @@ class ClimbQuery(tables.Table):
         template_name = 'django_tables2/bootstrap-responsive.html'
         row_attrs = {'class': lambda record: query_format(record)
         }
-
+class NeededClimbsTable(tables.Table):
+    grade = tables.Column()
+    needed = tables.Column()
+    class Meta:
+        template_name = 'django_tables2/bootstrap-responsive.html'
+    
 class GradeSpreadTable(tables.Table):
     grade = tables.Column()

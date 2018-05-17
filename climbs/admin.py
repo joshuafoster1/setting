@@ -17,8 +17,8 @@ class ClimbAdmin(ImportExportModelAdmin):
     model = Climb
     list_display = ['anchor', 'status', 'date_created', 'date_retired', 'color',
         'grade', 'area', 'setter']
-    list_filter = ['area__gym__name', 'status__status', 'date_created', 'setter__name', 'grade__grade']
-    search_fields = ['setter__name', ]
+    list_filter = ['area__gym__name', 'status__status', 'date_created', 'setter__tag', 'grade__grade']
+    search_fields = ['setter__tag', ]
 
 @admin.register(Setter)
 class SetterAdmin(ImportExportModelAdmin):

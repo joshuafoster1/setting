@@ -2,20 +2,39 @@
 {% load django_tables2 %}
 
 {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Modify the queue</h3>
+          <form method="post" novalidate>
 
-<form method="post" novalidate>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Confirm Queue</button>
 
-  {% csrf_token %}
-  <button type="submit" class="btn btn-success">Confirm Queue</button>
+          <a class="btn btn-success" href="{% url 'climb_set' %}">Return to Today's Set</a>
 
-<a class="btn btn-success" href="{% url 'climb_set' %}">Return to Today's Set</a>
 
-{% if table %}
-  {% render_table table %}
-{% endif %}
 
-{% include 'includes/formset.html' %}
+          {% include 'includes/formset.html' %}
 
-</form>
+          </form>
+       </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Climbs needed to meet Distribution</h3>
+
+          {% if table %}
+            {% render_table table %}
+          {% endif %}
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

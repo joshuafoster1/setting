@@ -9,6 +9,7 @@ import random
 DATE = date.today()
 class Gym(models.Model):
     name = models.CharField(max_length=50)
+
     def __str__(self):
         return self.name
 
@@ -29,6 +30,37 @@ class Gym(models.Model):
         for item in count:
             local_dict[item['grade__grade']]=item['count']
         return local_dict
+
+    def get_virtual_distribution(self, climb_type, count, climb_addition=0):
+        """
+        current distribution for each grade by percentage (current%)
+        """
+        grade_count = count
+        local_dict = {}
+        for grade, count in grade_count.items():
+            percentage = float(count)/(self.get_total_climbs(climb_type)+climb_addition)
+            local_dict[grade]=percentage
+        return local_dict
+
+    def get_distribution_difference(self, climb_type):
+        multiple =self.get_total_climbs(climb_type)
+        count = self.get_grade_count(climb_type)
+        target_percent = self.get_global_target_distribution(climb_type)
+        current_percent = self.get_virtual_distribution(climb_type, count)
+        grade_count = self.get_grade_count(climb_type)
+        output = []
+        for key in target_percent.keys():
+            if key in list(current_percent.keys()):
+                diff = target_percent[key] - current_percent[key]
+                count_needed = round(diff * multiple)
+                output.append({'grade': key, 'needed': count_needed})
+            else:
+                count_needed = round(target_percent[key] * multiple)
+
+                output.append({'grade': key, 'needed': count_needed})
+        newlist = sorted(output, key=lambda k: k['needed'], reverse=True)
+        return newlist
+
 
     def create_climbs_to_set(self, request, areas, climb_type):
         def dict_max(dict):
@@ -74,11 +106,12 @@ class Gym(models.Model):
 
 
 class Setter(models.Model):
-    name = models.CharField(max_length=10)
+    tag = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    current_gym = models.ForeignKey(Gym)
+    current_gym = models.ForeignKey(Gym, related_name = 'current_gyms')
+    foreman = models.ForeignKey(Gym, null=True, blank=True, related_name= 'foreman_gym')
     def __str__(self):
-        return self.name
+        return self.tag
 
     def get_user_info(self):
         """User information in a list of tuples: Username, First Name, Last Name, email, Birthdate, Category"""

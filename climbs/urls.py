@@ -13,6 +13,6 @@ urlpatterns = [
     url(r'^verify/$', views.climb_verification, name='climb_verification'),
     url(r'^climb/new_set/$', views.climb_set, name='climb_set'),
     url(r'^query/$', views.climb_query, name = 'climb_query'),
-    url(r'^verify/spread/$', views.verify_spread, name='verify_spread'),
+    url(r'^verify/spread/$', views.modify_spread, name='verify_spread'),
     url(r'^modify/queue/(?P<pk>\d+)/$', views.queue_modify, name='queue_modify'),
 ]

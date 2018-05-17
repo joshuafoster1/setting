@@ -20,7 +20,15 @@ def get_user(request):
     return setter
 def is_foreman(setter):
     user = User.objects.get(username = setter.user.username)
-    return user.groups.filter(name='Foreman').exists()
+    if setter.foreman:
+        if setter.foreman.name == setter.current_gym:
+            print('True')
+            return True
+        else:
+            return False
+    else:
+        print('yes')
+        return user.groups.filter(name='Foreman').exists()
 
 
 ### Views
@@ -229,7 +237,7 @@ def climb_select(request, pk, template_name='climbs/climb_form.html'):
     return render(request, template_name, {'form': form})
 
 
-def verify_spread(request):
+def modify_spread(request):
     setter = get_user(request)
     gym = setter.current_gym
     if request.method == 'POST':
@@ -241,11 +249,12 @@ def verify_spread(request):
 
     else:
         formset = QueueFormset(queryset =Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade'))
-        # queue = Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade')
-        # queue_table = ForemanQueueTable(queue)
-        # RequestConfig(request).configure(queue_table)
+        climb_type = Climb.objects.all().filter(status=4, area__gym__name = gym)[0].grade.climb
+        tableData = gym.get_distribution_difference(climb_type)
+        table = NeededClimbsTable(tableData)
+        RequestConfig(request).configure(table)
 
-    return render(request, 'climbs/modify_spread.html', { 'formset':formset})# 'table': queue_table,
+    return render(request, 'climbs/modify_spread.html', {'formset':formset, 'table': table})
 
 
 def climb_set(request):
