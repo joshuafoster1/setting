@@ -5,6 +5,7 @@ from datetime import date
 from django.db.models import Count, Min, Max
 from django.db import models
 import random
+from django_pandas.managers import DataFrameManager
 # Create your models here.
 DATE = date.today()
 class Gym(models.Model):
@@ -83,12 +84,8 @@ class Gym(models.Model):
             grades_to_set=[]
             for _ in range(climb_addition):
                 virtual_percent = area_obj.get_virtual_distribution(climb_type, count, climb_addition)
-            # print(virtual_percent['V6'])
-            # print(target_percent['V6'])
 
                 perc_diff = {}
-            # for grade_v, percent_v in virtual_percent.items():
-            #     perc_diff[grade_v] = target_percent[grade_v] - percent_v
                 for grade_t, percent_t in target_percent.items():
                     for grade_v, percent_v in virtual_percent.items():
                         if grade_v == grade_t:
@@ -104,6 +101,16 @@ class Gym(models.Model):
 
         return grades_to_set
 
+    # Deployment of pivot tables
+    def get_grade_area_pivot(self, climb_type):
+        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'setter',rows ="grade" , cols= 'area', aggfunc = len, margins=True, fill_value = 0)# #.to_html(classes = ['table', 'table-responsive'])
+        return df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()], columns = ['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
+
+    def get_grade_setter_pivot(self, climb_type):
+        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'date_created',rows ="grade" , cols= 'setter', aggfunc = len, margins=True, fill_value = 0)# #.to_html(classes = ['table', 'table-responsive'])
+        df = df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()])
+
+        return df.reindex(columns=['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
 
 class Setter(models.Model):
     tag = models.CharField(max_length=10)
@@ -276,6 +283,8 @@ class Climb(models.Model):
     grade = models.ForeignKey(Grade, related_name='climbs')
     area = models.ForeignKey(Area, related_name='climbs')
     setter = models.ForeignKey(Setter, related_name='climbs')
+
+    objects = DataFrameManager()
 
     def __str__(self):
         return self.color.color + ' ' + self.area.location_name

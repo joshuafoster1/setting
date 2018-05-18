@@ -111,6 +111,12 @@ class NeededClimbsTable(tables.Table):
     needed = tables.Column()
     class Meta:
         template_name = 'django_tables2/bootstrap-responsive.html'
-    
+
 class GradeSpreadTable(tables.Table):
     grade = tables.Column()
+
+class GradePivotTable(tables.Table):
+    grade = tables.Column()
+
+    class Meta:
+        template_name = 'django_tables2/bootstrap-responsive.html'

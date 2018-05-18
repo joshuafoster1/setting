@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django_tables2',
     'widget_tweaks',
     'import_export',
-    'accounts'
+    'accounts',
+    'django_pandas',
 ]
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True

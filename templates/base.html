@@ -30,7 +30,7 @@
 
                 {% ifequal user.groups.all.0.name 'Foreman' %}
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id='CoachMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" href="#" id='ForemanMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Climbs
                   </a>
                  <div class='dropdown-menu dropdown-menu-right' aria-labelledby="userMenu">
@@ -40,7 +40,17 @@
 
                  </div>
                 </li>
-              
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id='ForemanMenu' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Data Tables
+                  </a>
+                 <div class='dropdown-menu dropdown-menu-right' aria-labelledby="userMenu">
+                   <a class="dropdown-item" href="{% url 'climb_data' 'route' %}">Routes</a>
+                   <a class="dropdown-item" href="{% url 'climb_data' 'boulder' %}">Boulders</a>
+
+                 </div>
+                </li>
+
                   {% endifequal %}
 
                   <li class="nav-item">

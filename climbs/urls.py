@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^query/$', views.climb_query, name = 'climb_query'),
     url(r'^verify/spread/$', views.modify_spread, name='verify_spread'),
     url(r'^modify/queue/(?P<pk>\d+)/$', views.queue_modify, name='queue_modify'),
+    url(r'^datatables/(?P<climb_type>[-\w]+)/$', views.climb_data, name='climb_data'),
+
 ]

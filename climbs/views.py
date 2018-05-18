@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import django_tables2 as tables
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
@@ -113,9 +114,23 @@ def climb_verification(request):
     RequestConfig(request).configure(in_progress_table)
 
     return render(request, 'climbs/verification.html', {'table': in_progress_table})
+def climb_data(request, climb_type):
+    gym = get_user(request).current_gym
+
+    setter_data = gym.get_grade_setter_pivot(CLIMBTYPE[climb_type])
+    area_data = gym.get_grade_area_pivot(CLIMBTYPE[climb_type])
+
+    setter_pivot = GradePivotTable(setter_data, extra_columns=[('All', tables.Column())]+[(key, tables.Column()) for key in setter_data[0].keys() if key != 'grade'])
+    area_pivot= GradePivotTable(area_data, extra_columns=[('All', tables.Column())]+[(key, tables.Column()) for key in area_data[0].keys() if key != 'grade'])
+
+    return render(request, 'climbs/data_tables.html', {'setter_pivot':setter_pivot, 'area_pivot': area_pivot})
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     gym = get_user(request).current_gym
+    testtable = GradePivotTable(gym.get_grade_setter_pivot(2), extra_columns=[(key, tables.Column()) for key in gym.get_grade_setter_pivot(2)[0].keys() if key != 'grade'])
+    # gym.get_grade_area_pivot(1)
+
+    pivot_out_as_html =gym.get_grade_area_pivot(1)
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
         request.session['remove_climbs'] = climb_ids
@@ -129,7 +144,7 @@ def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     climbs = Climb.objects.filter(area__gym__name = gym).filter(grade__climb=CLIMBTYPE[climb_type], status__status='current').order_by('date_created')
     table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
-    return render(request, template_name, {'table': table, 'gym': gym})
+    return render(request, template_name, {'table': testtable, 'gym': gym})#, 'pivot_out_as_html': pivot_out_as_html})
 
 
 def revert_climb(request, pk):

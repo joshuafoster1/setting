@@ -9,6 +9,8 @@ jQuery(function($) {
 });
 </script>
 <h1>Select climbs</h1>
+
+
 <p>Use the checkbox to select the climbs for removal. For ease of selection select the first climb
   and then hold the Shift key down while selecting the last climb in the page.
 </p>
@@ -18,6 +20,5 @@ jQuery(function($) {
   {% csrf_token %}
 <button type="submit" class="btn btn-success">Select for Removal</button>
   {% render_table table %}
-
 </form>
 {% endblock %}
