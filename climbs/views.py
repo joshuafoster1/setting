@@ -127,10 +127,7 @@ def climb_data(request, climb_type):
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     gym = get_user(request).current_gym
-    testtable = GradePivotTable(gym.get_grade_setter_pivot(2), extra_columns=[(key, tables.Column()) for key in gym.get_grade_setter_pivot(2)[0].keys() if key != 'grade'])
-    # gym.get_grade_area_pivot(1)
 
-    pivot_out_as_html =gym.get_grade_area_pivot(1)
     if request.method =="POST":
         climb_ids = list(request.POST.getlist('selection'))
         request.session['remove_climbs'] = climb_ids
@@ -144,7 +141,7 @@ def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     climbs = Climb.objects.filter(area__gym__name = gym).filter(grade__climb=CLIMBTYPE[climb_type], status__status='current').order_by('date_created')
     table = ClimbTable(climbs)
     RequestConfig(request).configure(table)
-    return render(request, template_name, {'table': testtable, 'gym': gym})#, 'pivot_out_as_html': pivot_out_as_html})
+    return render(request, template_name, {'table': table, 'gym': gym})
 
 
 def revert_climb(request, pk):
