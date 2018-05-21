@@ -103,15 +103,18 @@ class Gym(models.Model):
 
     # Deployment of pivot tables
     def get_grade_area_pivot(self, climb_type):
-        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'setter',rows ="grade" , cols= 'area', aggfunc = len, margins=True, fill_value = 0)# #.to_html(classes = ['table', 'table-responsive'])
-        return df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()], columns = ['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
+        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'setter',rows ="grade" , cols= 'area', aggfunc = len, margins=True, fill_value = 0)
+        return df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()], columns = ['All']+[a for a in df.columns if a != 'All'], fill_value=0).reset_index().to_dict('records')
 
     def get_grade_setter_pivot(self, climb_type):
-        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'date_created',rows ="grade" , cols= 'setter', aggfunc = len, margins=True, fill_value = 0)# #.to_html(classes = ['table', 'table-responsive'])
-        df = df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()])
+        df = Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').to_pivot_table(values = 'date_created',rows ="grade" , cols= 'setter', aggfunc = len, margins=True, fill_value = 0)
+        df = df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()], fill_value=0)
 
         return df.reindex(columns=['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
-
+    def get_color_count(self, climb_type):
+        data = Climb.objects.values('color__color').filter(area__gym=self, grade__climb=climb_type, status__status='current').annotate(count=Count('grade'))
+        print(data)
+        return data
 class Setter(models.Model):
     tag = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)

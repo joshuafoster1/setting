@@ -17,3 +17,34 @@
 .pad5 {
   padding-bottom: 5px
 }
+
+.table-grad-green-1 {background-color: rgba(0, 255, 0, 0.01);}
+.table-grad-green-2 {background-color: rgba(0, 255, 0, 0.1);}
+.table-grad-green-3 {background-color: rgba(0, 255, 0, 0.2);}
+.table-grad-green-4 {background-color: rgba(0, 255, 0, 0.3);}
+.table-grad-green-5 {background-color: rgba(0, 255, 0, 0.4);}
+.table-grad-green-6 {background-color: rgba(0, 255, 0, 0.5);}
+.table-grad-green-7 {background-color: rgba(0, 255, 0, 0.6);}
+.table-grad-green-8 {background-color: rgba(0, 255, 0, 0.7);}
+.table-grad-green-9 {background-color: rgba(0, 255, 0, 0.8);}
+.table-grad-green-10 {background-color: rgba(0, 255, 0, 0.9);}
+
+.table-grad-red-1 {background-color: rgba(255, 0, 0, 0.01);}
+.table-grad-red-2 {background-color: rgba(255, 0, 0, 0.1);}
+.table-grad-red-3 {background-color: rgba(255, 0, 0, 0.2);}
+.table-grad-red-4 {background-color: rgba(255, 0, 0, 0.3);}
+.table-grad-red-5 {background-color: rgba(255, 0, 0, 0.4);}
+.table-grad-red-6 {background-color: rgba(255, 0, 0, 0.5);}
+.table-grad-red-7 {background-color: rgba(255, 0, 0, 0.6);}
+.table-grad-red-8 {background-color: rgba(255, 0, 0, 0.7);}
+.table-grad-red-9 {background-color: rgba(255, 0, 0, 0.8);}
+.table-grad-red-10 {background-color: rgba(255, 0, 0, 0.9);}
+
+.red{background-color: rgba(255, 0, 0, 0.3);}
+.orange {background-color: rgba(255, 128, 0, 0.3);}
+.yellow {background-color: rgba(255, 255, 0, 0.3);}
+.green {background-color: rgba(0, 255, 0, 0.3);}
+.blue {background-color: rgba(0, 0, 255, 0.3);}
+.purple{background-color: rgba(127, 0, 255, 0.3);}
+.black {background-color: rgba(64, 64, 64, 0.3);}
+.pink{background-color: rgba(255, 0, 127, 0.3);}

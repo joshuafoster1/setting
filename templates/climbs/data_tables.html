@@ -3,27 +3,29 @@
 
 {% block content %}
 <div class="container">
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h3 class="card-title">Grade count by Setter</h3>
-          <h6 class="card-subtitle mb-2 text-muted"></h6>
-          {% render_table setter_pivot %}
-       </div>
-      </div>
-    </div>
-    <div class="col-md-6">
+  <!-- <div class="row">
+    <div class="col-lg-6"> -->
       <div class="card">
         <div class="card-body">
           <h3 class="card-title">Grade count by Area</h3>
+          <h6 class="card-subtitle mb-2 text-muted"></h6>
+           <div class="table-responsive">
+               {% render_table area_pivot %}
+           </div>
+       </div>
+      <!-- </div> -->
+    </div>
+    <!-- <div class="col-lg-6"> -->
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Grade count by Setter</h3>
            <h6 class="card-subtitle mb-2 text-muted"></h6>
-          {% render_table area_pivot %}
+          {% render_table setter_pivot %}
         </div>
       </div>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
 </div>
 
-
+{% render_table color_count %}
 {% endblock %}

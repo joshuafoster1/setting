@@ -22,6 +22,30 @@ def query_format(record):
         return 'table-warning'
     else:
         return 'table-success'
+def test2(record):
+    color = record['color__color']
+    return color.lower()
+def test(value):
+    if value <1:
+        return "table-grad-green-1"
+    elif value < 2:
+        return "table-grad-green-2"
+    elif value < 3:
+        return "table-grad-green-3"
+    elif value < 4:
+        return "table-grad-green-4"
+    elif value < 5:
+        return "table-grad-green-5"
+    elif value < 6:
+        return "table-grad-green-6"
+    elif value < 7:
+        return "table-grad-green-7"
+    elif value < 8:
+        return "table-grad-green-8"
+    elif value < 9:
+        return "table-grad-green-9"
+    else:
+        return "table-grad-green-10"
 
 
 class WeeksOldColumn(tables.Column):
@@ -29,6 +53,10 @@ class WeeksOldColumn(tables.Column):
         weeks = (DATE - record.date_created)/7
         return weeks.days
 
+class DataGradientDisplayColumn(tables.Column):
+    attrs={'td':{'class':lambda value: test(value)}}
+    def render(self, value, record):
+        return value
 
 class InProgressTable(tables.Table):
     revert = tables.LinkColumn('revert_climb', text='Revert', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
@@ -120,3 +148,12 @@ class GradePivotTable(tables.Table):
 
     class Meta:
         template_name = 'django_tables2/bootstrap-responsive.html'
+
+class ClimbColorTable(tables.Table):
+    color__color = tables.Column(verbose_name="Color")
+    count = tables.Column()
+
+    class Meta:
+        template_name = 'django_tables2/bootstrap-responsive.html'
+        row_attrs = {'class': lambda record: test2(record)
+        }

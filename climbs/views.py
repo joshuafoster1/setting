@@ -119,11 +119,14 @@ def climb_data(request, climb_type):
 
     setter_data = gym.get_grade_setter_pivot(CLIMBTYPE[climb_type])
     area_data = gym.get_grade_area_pivot(CLIMBTYPE[climb_type])
+    color_data = gym.get_color_count(CLIMBTYPE[climb_type])
 
-    setter_pivot = GradePivotTable(setter_data, extra_columns=[('All', tables.Column())]+[(key, tables.Column()) for key in setter_data[0].keys() if key != 'grade'])
-    area_pivot= GradePivotTable(area_data, extra_columns=[('All', tables.Column())]+[(key, tables.Column()) for key in area_data[0].keys() if key != 'grade'])
+    setter_pivot = GradePivotTable(setter_data, extra_columns=[('All', DataGradientDisplayColumn())]+[(key, DataGradientDisplayColumn()) for key in setter_data[0].keys() if key != 'grade'])
+    area_pivot= GradePivotTable(area_data, extra_columns=[('All', DataGradientDisplayColumn())]+[(key, DataGradientDisplayColumn()) for key in area_data[0].keys() if key != 'grade'])
+    color_count = ClimbColorTable(color_data)
+    RequestConfig(request).configure(color_count)
 
-    return render(request, 'climbs/data_tables.html', {'setter_pivot':setter_pivot, 'area_pivot': area_pivot})
+    return render(request, 'climbs/data_tables.html', {'setter_pivot':setter_pivot, 'area_pivot': area_pivot, "color_count":color_count})
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     gym = get_user(request).current_gym
