@@ -15,7 +15,7 @@ class Gym(models.Model):
         return self.name
 
     def get_total_climbs(self, climb_type):
-        return Climb.objects.filter(area__gym=self, grade__climb=climb_type).count()
+        return Climb.objects.filter(area__gym=self, grade__climb=climb_type, status__status='current').count()
 
     def get_global_target_distribution(self, climb_type):
         global_dist = list(Distribution.objects.values('grade__grade', 'percent').filter(gym=self, grade__climb=climb_type))
