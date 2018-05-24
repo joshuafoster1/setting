@@ -35,6 +35,11 @@ def is_foreman(setter):
 ### Views
 
 def climb_query(request, climb_type='boulder'):
+    '''
+    Display a table where each row is the summary of a day of setting for
+    specified gym.
+    '''
+
     gym = get_user(request).current_gym
     try:
         climb_selection = request.session['select_climbs']
@@ -114,7 +119,11 @@ def climb_verification(request):
     RequestConfig(request).configure(in_progress_table)
 
     return render(request, 'climbs/verification.html', {'table': in_progress_table})
+
+
 def climb_data(request, climb_type):
+    '''Display datatables for climb information by type of climbing and gym'''
+
     gym = get_user(request).current_gym
 
     setter_data = gym.get_grade_setter_pivot(CLIMBTYPE[climb_type])
@@ -127,6 +136,7 @@ def climb_data(request, climb_type):
     RequestConfig(request).configure(color_count)
 
     return render(request, 'climbs/data_tables.html', {'setter_pivot':setter_pivot, 'area_pivot': area_pivot, "color_count":color_count})
+
 
 def climbs_list(request, climb_type, template_name='climbs/climbs_list.html'):
     gym = get_user(request).current_gym
@@ -156,19 +166,23 @@ def revert_climb(request, pk):
 
 
 def climb_create(request, template_name='climbs/climb_form.html'):
+    setter = get_user(request)
+    gym = setter.current_gym
+    print(gym)
     if request.method == 'POST':
-        form = ClimbCreateForm(request.POST)
+        form = ClimbCreateForm(request.POST, gym=gym)
         if form.is_valid():
             climb = form.save(commit=False)
             climb.status = Status.objects.get(status='in queue')
             climb.save()
             return redirect('climb_set')
     else:
-        form = ClimbCreateForm()
+        form = ClimbCreateForm(gym=gym)
     return render(request, template_name, {'form': form})
 
 def queue_modify(request, pk):
     climb = Climb.objects.get(pk=pk)
+    gym = get_user(request).current_gym
 
     if request.method == "POST":
         form = ClimbQueueModifyForm(request.POST)
@@ -186,14 +200,15 @@ def queue_modify(request, pk):
             return redirect('verify_spread')
 
     else:
-        form = ClimbQueueModifyForm(instance = climb)
+        form = ClimbQueueModifyForm(instance = climb, gym=gym)
     return render(request, 'climbs/climb_form.html', {'form': form})
 
 def climb_update(request, pk):
     climb = Climb.objects.get(pk=pk)
+    gym = get_user(request).current_gym
 
     if request.method == "POST":
-        form = ForemanClimbUpdateForm(request.POST)
+        form = ForemanClimbUpdateForm(request.POST, gym=gym)
         if form.is_valid():
             update = form
             climb.color = update.cleaned_data['color']
@@ -208,7 +223,7 @@ def climb_update(request, pk):
             return redirect('climb_set')
 
     else:
-        form = ForemanClimbUpdateForm(instance = climb)
+        form = ForemanClimbUpdateForm(instance = climb, gym =gym )
     return render(request, 'climbs/climb_form.html', {'form': form})
 
 
@@ -256,14 +271,14 @@ def modify_spread(request):
     setter = get_user(request)
     gym = setter.current_gym
     if request.method == 'POST':
-        formset = QueueFormset(request.POST)
+        formset = QueueFormSet(request.POST,gym = gym)
         if formset.is_valid():
             queue = formset.save()
 
             return redirect('climb_set')
 
     else:
-        formset = QueueFormset(queryset =Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade'))
+        formset = QueueFormSet(queryset =Climb.objects.all().filter(status=4, area__gym__name = gym).order_by('grade'), gym = gym)
         climb_type = Climb.objects.all().filter(status=4, area__gym__name = gym)[0].grade.climb
         tableData = gym.get_distribution_difference(climb_type)
         table = NeededClimbsTable(tableData)

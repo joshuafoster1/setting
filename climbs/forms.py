@@ -17,8 +17,10 @@ class ClimbCreateForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
+        gym = kwargs.pop('gym')
         super(ClimbCreateForm, self).__init__(*args, **kwargs)
         self.fields['date_created'].initial = DATE
+        self.fields['area'].queryset = Area.objects.filter(gym=gym)
 
 class AddManyForm(forms.ModelForm):
     class Meta:
@@ -43,11 +45,38 @@ class ForemanClimbUpdateForm(forms.ModelForm):
             'date_created':DateInput(),
         }
 
+    def __init__(self, *args, **kwargs):
+        gym = kwargs.pop('gym')
+        super(ForemanClimbUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].initial = DATE
+        self.fields['area'].queryset = Area.objects.filter(gym=gym)
+
+
 class ClimbQueueModifyForm(forms.ModelForm):
     class Meta:
         model=Climb
         fields = ['grade', 'area']
+
+    def __init__(self, *args, **kwargs):
+        self.gym = kwargs.pop('gym')
+        super(ClimbQueueModifyForm, self).__init__(*args, **kwargs)
+        self.fields['area'].queryset = Area.objects.filter(gym=self.gym)
+
 AddmanyFormset = forms.modelformset_factory(Climb, form=ClimbCreateForm)
 
 
-QueueFormset = modelformset_factory(Climb, form = ClimbQueueModifyForm, extra=0)
+BaseQueueFormset = modelformset_factory(Climb, form = ClimbQueueModifyForm, extra=0)
+class QueueFormSet(BaseQueueFormset):
+
+    def __init__(self, *args, **kwargs):
+        #  create a user attribute and take it out from kwargs
+        # so it doesn't messes up with the other formset kwargs
+        self.gym = kwargs.pop('gym')
+        super(QueueFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+
+    def _construct_form(self, *args, **kwargs):
+        # inject user in each form on the formset
+        kwargs['gym'] = self.gym
+        return super(QueueFormSet, self)._construct_form(*args, **kwargs)

@@ -3,22 +3,50 @@
 
 {% block content %}
 
+<div class="container">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Grade count by Area</h3>
+          <h6 class="card-subtitle mb-2 text-muted"></h6>
+           <div class="table-responsive">
+             <form name='form' method="post" action="{% url 'climb_set' %}" novalidate>
+               {% csrf_token %}
+               <table class = "table">
+             {% for area in areas %}
+             <tr>
+               <td>
+                 Quantity to reset in {{area.area__location_name}}:
+               </td>
 
+             <td>
+             <input type="number" name="{{area.area__location_name}}"
+              min="0" max="100" step="1" value="{{area.count}}">
+            </td>
+          </tr>
+              {% endfor %}
+          </table>
+             <input class="btn btn-success mb-2" type="submit" value="Confirm Removal and Create Spread">
 
-<form name='form' method="post" action="{% url 'climb_set' %}" novalidate>
-  {% csrf_token %}
-{% for area in areas %}
-Quantity to reset in {{area.area__location_name}}:
+             <a class="btn btn-success mb-2" href="{% url 'climbs_list' climb_type %}">Re-Select Climbs</a>
+             </form>
 
-<input type="number" name="{{area.area__location_name}}"
- min="0" max="100" step="1" value="{{area.count}}">
-<br>
- {% endfor %}
+           </div>
+       </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title">Grade count by Setter</h3>
+           <h6 class="card-subtitle mb-2 text-muted"></h6>
+           {% render_table table %}
 
-<input class="btn btn-success" type="submit" value="Confirm Removal and Create Spread">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<a class="btn btn-success" href="{% url 'climbs_list' climb_type %}">Re-Select Climbs</a>
-</form>
-
-{% render_table table %}
 {% endblock %}

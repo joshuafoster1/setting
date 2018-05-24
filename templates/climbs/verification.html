@@ -6,7 +6,7 @@
 <form method="post" novalidate>
 
   {% csrf_token %}
-<button type="submit" class="btn btn-success">Confirm Verification of New Climbs</button>
+<button type="submit" class="btn btn-success mb-2">Confirm Verification of New Climbs</button>
 
 {% if table %}
   {% render_table table %}

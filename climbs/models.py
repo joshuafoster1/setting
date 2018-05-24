@@ -113,8 +113,9 @@ class Gym(models.Model):
         return df.reindex(columns=['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
     def get_color_count(self, climb_type):
         data = Climb.objects.values('color__color').filter(area__gym=self, grade__climb=climb_type, status__status='current').annotate(count=Count('grade'))
-        print(data)
         return data
+
+        
 class Setter(models.Model):
     tag = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -11,12 +11,12 @@
           <h6 class="card-subtitle mb-2 text-muted">Please choose a climb before you start setting</h6>
           {% render_table table %}
           {% ifequal user.groups.all.0.name 'Foreman' %}
-          <a class="btn btn-success" href="{% url 'climb_create' %}">Add a Climb</a>
-          <a class="btn btn-success" href="{% url 'verify_spread' %}">Modify Spread</a>
+          <a class="btn btn-success mb-2" href="{% url 'climb_create' %}">Add a Climb</a>
+          <a class="btn btn-success mb-2" href="{% url 'verify_spread' %}">Modify Spread</a>
           {% endifequal %}
 
           {% if table_len < 1%}
-          <a class="btn btn-success" href="{% url 'climb_create' %}">Add a Climb</a>
+          <a class="btn btn-success mb-2" href="{% url 'climb_create' %}">Add a Climb</a>
           {% endif %}
        </div>
       </div>
@@ -29,7 +29,7 @@
           {% render_table in_progress_table %}
           {% ifequal user.groups.all.0.name 'Foreman' %}
 
-          <a class="btn btn-success" href="{% url 'climb_verification' %}">Verify climbs</a>
+          <a class="btn btn-success mb-2" href="{% url 'climb_verification' %}">Verify climbs</a>
 
           {% endifequal %}
         </div>

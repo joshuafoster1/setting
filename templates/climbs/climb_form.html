@@ -6,8 +6,8 @@
   {% csrf_token %}
   {% include 'includes/form.html' %}
 
-  <button type="submit" class="btn btn-success">Submit</button>
-  <a class="btn btn-success" href="{% url 'climb_set' %}">Cancel</a>
+  <button type="submit" class="btn btn-success mb-2">Submit</button>
+  <a class="btn btn-success mb-2" href="{% url 'climb_set' %}">Cancel</a>
 
 </form>
 {% endblock %}
