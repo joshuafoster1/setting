@@ -21,6 +21,7 @@ class ClimbCreateForm(forms.ModelForm):
         super(ClimbCreateForm, self).__init__(*args, **kwargs)
         self.fields['date_created'].initial = DATE
         self.fields['area'].queryset = Area.objects.filter(gym=gym)
+        self.fields['setter'].queryset = Setter.objects.filter(current_gym=gym)
 
 class AddManyForm(forms.ModelForm):
     class Meta:
@@ -30,12 +31,12 @@ class AddManyForm(forms.ModelForm):
 class ClimbSelectForm(forms.ModelForm):
     class Meta:
         model = Climb
-        fields = ['anchor','color',]
+        fields = ['anchor','color','notes']
 
 class ForemanClimbSelectForm(forms.ModelForm):
     class Meta:
         model = Climb
-        fields = ['anchor', 'color', 'setter']
+        fields = ['anchor', 'color', 'setter', 'notes']
 
 class ForemanClimbUpdateForm(forms.ModelForm):
     class Meta:
@@ -50,6 +51,7 @@ class ForemanClimbUpdateForm(forms.ModelForm):
         super(ForemanClimbUpdateForm, self).__init__(*args, **kwargs)
         self.fields['date_created'].initial = DATE
         self.fields['area'].queryset = Area.objects.filter(gym=gym)
+        self.fields['setter'].queryset = Setter.objects.filter(current_gym=gym)
 
 
 class ClimbQueueModifyForm(forms.ModelForm):

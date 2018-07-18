@@ -111,11 +111,12 @@ class Gym(models.Model):
         df = df.reindex(['All']+[value for dict in Grade.objects.values('grade').filter(climb=climb_type).order_by('pk') for value in dict.values()], fill_value=0)
 
         return df.reindex(columns=['All']+[a for a in df.columns if a != 'All']).reset_index().to_dict('records')
+
     def get_color_count(self, climb_type):
         data = Climb.objects.values('color__color').filter(area__gym=self, grade__climb=climb_type, status__status='current').annotate(count=Count('grade'))
         return data
 
-        
+
 class Setter(models.Model):
     tag = models.CharField(max_length=10)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -287,7 +288,7 @@ class Climb(models.Model):
     grade = models.ForeignKey(Grade, related_name='climbs')
     area = models.ForeignKey(Area, related_name='climbs')
     setter = models.ForeignKey(Setter, related_name='climbs')
-
+    notes = models.CharField(max_length=120, blank=True, null=True)
     objects = DataFrameManager()
 
     def __str__(self):

@@ -4,7 +4,13 @@ from import_export import resources
 from django.contrib import admin
 from .models import *
 from import_export.admin import ImportExportModelAdmin
+from django.contrib.auth.models import User
+
 # Register your models here.
+admin.site.unregister(User)
+@admin.register(User)
+class UserAdmin(ImportExportModelAdmin):
+    pass
 @admin.register(Gym)
 class GymAdmin(ImportExportModelAdmin):
     model = Gym

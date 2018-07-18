@@ -22,9 +22,11 @@ def query_format(record):
         return 'table-warning'
     else:
         return 'table-success'
+
 def test2(record):
     color = record['color__color']
     return color.lower()
+
 def test(value):
     if value <1:
         return "table-grad-green-1"
@@ -64,8 +66,8 @@ class InProgressTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = [ 'anchor', 'area', 'grade', 'color', 'setter']
-        sequence = ('update', 'area', 'grade', 'color', 'setter','anchor' )
+        fields = [ 'anchor', 'area', 'grade', 'color', 'setter', 'notes']
+        sequence = ('update', 'area', 'grade', 'color', 'notes', 'setter','anchor' )
 
 
 class ClimbTable(tables.Table):
@@ -77,8 +79,8 @@ class ClimbTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = [ 'anchor', 'area', 'grade', 'color', 'setter']
-        sequence = ('selection', 'update', 'weeks_old', 'area', 'grade', 'color', 'setter','anchor' )
+        fields = [ 'anchor', 'area', 'grade', 'color', 'setter', 'date_created']
+        sequence = ('selection', 'update', 'date_created', 'weeks_old', 'area', 'grade', 'color', 'setter','anchor' )
         row_attrs = {
             'class': lambda record: row_format(record)
         }
@@ -103,14 +105,14 @@ class QueueTable(tables.Table):
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['grade', 'area']
+        fields = ['grade', 'area', 'notes']
 
 class ForemanQueueTable(tables.Table):
     modify = tables.LinkColumn('queue_modify', text='Change', args=[A('pk')], orderable=False, empty_values=(), attrs={'td':{"class": "btn"}})
     class Meta:
         model = Climb
         template_name = 'django_tables2/bootstrap-responsive.html'
-        fields = ['grade', 'area']
+        fields = ['grade', 'area', 'notes']
 
 class ClimbRemoveTable(tables.Table):
     # selection = tables.CheckBoxColumn(accessor='id', checked=True, orderable = True)
